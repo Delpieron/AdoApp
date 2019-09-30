@@ -29,15 +29,28 @@ namespace AdoApp
         {
             SqlConnection connection = new SqlConnection(conn);
             connection.Open();
+
             SqlCommand command = new SqlCommand("select * from dbo.Cars", connection);
             SqlDataReader reader = command.ExecuteReader();
             List<Car> cars = new List<Car>();
-            while (reader.HasRows)
-            {
-                var id = Convert.ToInt32(reader["ID"]); 
-                var name = reader["Name"].ToString();
-                var ModelId = Convert.ToInt32(reader["ModelId"]);
-            }
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        cars.Add(new Car
+                        {
+                            ID = Convert.ToInt32(reader["ID"]),
+                            Name = reader["Name"].ToString(),
+                            ModelId = Convert.ToInt32(reader["ModelId"])
+                        }
+                            );
+                    }
+                }
+            
+                connection.Close();
+            dataGridView1.DataSource = cars;
+
         }
     }
 }
